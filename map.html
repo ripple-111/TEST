@@ -29,6 +29,7 @@
             word-wrap: break-word;
             text-indent:1em;
         }
+        
         .info:hover {
             color: white;
             background-color: rgba(111, 111, 111, 0.3);
@@ -40,7 +41,10 @@
             height: 650px;
             background: white;
         }
-
+        #map{
+            height:clac(100vh-200px)!important
+        }
+        
         /* li {
             font-size: 18px;
             margin-top: 20px;
@@ -95,7 +99,7 @@
         <div class="container" style="flex:1 1 auto;min-height: 400px;margin:10px;">
             <div class="inner"
                 style="margin: 0 auto;min-height:500px;box-shadow: 0 0 5px rgb(0 0 0 / 10%);width:90vw;display: flex;flex-wrap: wrap;">
-                <div id="map" style="height:calc(100vh-200px);width:70%;margin-right: 20px;">
+                <div id="map" style="width:70%;margin-right: 20px;">
                     <p style="font-size:22px;text-align:center;margin-top:100px">加载中...</p>
                 </div>
                 <div class="side">
