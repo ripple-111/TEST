@@ -1,141 +1,259 @@
 <!DOCTYPE html>
 <html>
-<head>
-<meta charset="utf-8">
-<meta name="renderer" content="webkit">
-<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-<meta name="Keywords" content="湖南工商大学招生就业指导处 云就业 高校 大学 大学生 就业 就业网 就业信息网 就业指导 就业指导中心 就业中心 创业 创业指导"/>
-<meta name="Description" content="湖南工商大学招生就业指导处 云就业 高校 大学 大学生 就业 就业网 就业信息网 就业指导 就业指导中心 就业中心 创业 创业指导"/>
-<title>就业政策地图</title>
-<script src="https://cdn.jsdelivr.net/npm/echarts@4.9.0/dist/echarts.min.js"></script>
-<script src="https://upcdn.b0.upaiyun.com/libs/jquery/jquery-1.9.1.min.js"></script>
-<style>
-    *{
-        margin: 0;
-        padding: 0;
-    }
-</style>
-</head>
-<body>
-    <div style="display:flex;flex-direction:column;margin-top: 140px;">
-    <div class="container" style="flex:1 1 auto;min-height: 400px;margin:20px">
-        <div class="inner" style="margin: 0 auto;min-width: 1200px;min-height:500px;width:1200px;border: 2px solid saddlebrown;">
-            <div id="map" style="height:600px;width:70%">
 
+<head>
+    <meta charset="utf-8">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="Keywords" content="湖南工商大学招生就业指导处 云就业 高校 大学 大学生 就业 就业网 就业信息网 就业指导 就业指导中心 就业中心 创业 创业指导" />
+    <meta name="Description" content="湖南工商大学招生就业指导处 云就业 高校 大学 大学生 就业 就业网 就业信息网 就业指导 就业指导中心 就业中心 创业 创业指导" />
+    <title>就业政策地图</title>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.3.1/dist/echarts.min.js"></script>
+    <script src="https://upcdn.b0.upaiyun.com/libs/jquery/jquery-1.9.1.min.js"></script>
+    <script src="dat.gui.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+
+        }
+
+        body {
+            background-color: #f0f0f0;
+        }
+
+        .info {
+            display: block;
+            text-decoration: none;
+            color: black;
+            word-wrap: break-word;
+            text-indent:1em;
+        }
+        .info:hover {
+            color: white;
+            background-color: rgba(111, 111, 111, 0.3);
+        }
+        .side {
+            overflow: hidden auto;
+            flex: 1;
+            padding: 0 10px;
+            height: 650px;
+            background: white;
+        }
+
+        /* li {
+            font-size: 18px;
+            margin-top: 20px;
+            line-height: 30px;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            overflow: hidden;
+            list-style: inside;
+            border-bottom: 1px dashed black;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        } */
+        .swipe-list{
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            overflow: hidden;
+        }
+        .swipe-item{
+            position: relative;
+            width: 100%;
+        }
+        @media screen and (max-width:1000px) {
+            #map{
+                width: 100%!important;
+                margin-bottom: 50px;
+                margin-right: 0px!important;
+            }
+            .side{
+               height: calc(100vh - 1000px)!important;
+            }
+        }
+    </style>
+</head>
+
+<body style=" background: url(https://www.hutb.edu.cn/www/template/images/bg.png) repeat-x;">
+    <div class="header" id="swipe-header" style="background-color:#fff;">
+        <div class="inner clearfix" id="inner-clearfix">
+            <!-- 语言切换 -->
+            <div class="logo" id="logo">
+                <a href="javascript:;" class="logo-link" style="height: 100%;">
+                    <img src="http://yun-campus-res.oss-cn-shenzhen.aliyuncs.com/school/1560476083-7801.png">
+                    <!--只有主页才显示联盟信息-->
+                </a>
             </div>
         </div>
     </div>
+    
+    <div style="display:flex;flex-direction:column;margin-top: 10px;">
+        <div class="container" style="flex:1 1 auto;min-height: 400px;margin:10px;">
+            <div class="inner"
+                style="margin: 0 auto;min-height:500px;box-shadow: 0 0 5px rgb(0 0 0 / 10%);width:90vw;display: flex;flex-wrap: wrap;">
+                <div id="map" style="height:650px;width:70%;margin-right: 20px;">
+                    <p style="font-size:22px;text-align:center;margin-top:100px">加载中...</p>
+                </div>
+                <div class="side">
+                    <p style="text-align:center;font-Weight:700;font-size: 20px;margin-top: 10px;" id="title">
+                        就业政策</p>
+                    <ul style="margin-top:10px" id="list">
+                        <li style="text-align:center;font-size: 20px;color:gray;margin-top: 100px;border: none;">请在地图选择你想了解的省份</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
     </div>
 </body>
-<script>
-    $(function (){
-        $.getJSON('china.json',(data)=>{
-            echarts.registerMap('china',data)
-            let myChart= echarts.getInstanceById('map'); //有的话就获取已有echarts实例的DOM节点。
-            if (myChart== null) { // 如果不存在，就进行初始化。
-            myChart= echarts.init($('#map')[0]);
-            }
-            console.log($('#map')[0])
-            myChart.setOption(option)
-            $(window).onresize=()=>myChart.resize()
-            })
-            let option={
-          //backgroundColor: '#26D0CE',//地图背景色
-         title:{
-          text:'全国就业政策图'},
-          series:[{
-            name:"就业政策",
-            type:'map', // 告诉echarts 要去渲染的是一个地图
-            map:'china',// 告诉echarts  要去渲染中国地图
-          label: {
-              normal:{
-                show: true, // 是否显示对应地名
-                textStyle: { //字体颜色
-                  color: '#1fddff'
-                }
-              },
-              emphasis: {
-                show: true,
+<script type="module">
+    const gui=new dat.GUI()
+    const option= {
+            backgroundColor: '#ffffff',//地图背景色
+            title: {
+                text: '全国就业政策图',
                 textStyle: {
-                  color: '#e0eafc'
+                    color: 'black',
+                    fontSize: 22
                 }
-              }
             },
-        roam:true,
-        zoom:1.25,// 控制地图的放大和缩小
-         itemStyle: {
-              normal: {
-                borderWidth: 2, // 地图边框宽度
-                borderColor: '#1C86EE', // 地图边框颜色
-                areaColor: '#026295' // 地图颜色
-              },
-              emphasis: {//选中省份的颜色
-                areaColor: '#1fddff',
-                shadowBlur: 2,
-                borderWidth: 2,
-              }
-            
-      },
-      data:[{name:'广东',value:80.06,num:69},
-              {name:'江苏',value:63.26,num:78},
-              {name:'山东',value:58.87,num:58},
-              {name:'浙江',value:56.93,num:97},
-              {name:'河南',value:51.12,num:53},
-              {name:'四川',value:43.52,num:52},
-              {name:'河北',value:39.47,num:52},
-              {name:'河南',value:51.12,num:53},
-              {name:'湖南',value:31.08,num:45},
-              {name:'安徽',value:28.06,num:44},
-              {name:'湖北',value:25.01,num:42},
-              {name:'上海',value:24.81,num:102},
-              {name:'陕西',value:24.24,num:63},
-              {name:'云南',value:22.79,num:47},
-              {name:'北京',value:20.87,num:97},
-              {name:'福建',value:20.46,num:52},
-              {name:'辽宁',value:20.13,num:46},
-              {name:'贵州',value:19.95,num:55},
-              {name:'江西',value:19.61,num:42},
-              {name:'广西',value:19.58,num:39},
-              {name:'重庆',value:18.44,num:59},
-              {name:'山西',value:17.67,num:47},
-              {name:'新疆',value:12.77,num:51},
-              {name:'内蒙古',value:11.18,num:44},
-              {name:'天津',value:10.80,num:69},
-              {name:'吉林',value:10.69,num:40},
-              {name:'黑龙江',value:10.11,num:27},
-              {name:'甘肃',value:10.10,num:38},
-              {name:'海南',value:4.40,num:47},
-              {name:'宁夏',value:3.09,num:44},
-              {name:'青海',value:2.96,num:48},
-              {name:'西藏',value:1.72,num:49}]
-              }],
-            visualMap:[{
-              type:'piecewise',
-              show:true,
-            // splitNumber:4
-            pieces:[           // 分段
-            {min:79},
-            {min:59,max:79},
-            {min:39,max:59},
-            {min:19,max:39},
-            {min:1,max:19}
-            ],
-            textStyle:{
-              color:'#004e92',
-              fontSize:14,
+            series: [{
+                name: "就业政策",
+                type: 'map', // 告诉echarts 要去渲染的是一个地图
+                map: 'china2',// 告诉echarts  要去渲染中国地图
+                label: {
+                    normal: {
+                        show: true, // 是否显示对应地名
+                        textStyle: { //字体颜色
+                            color:'rgba(0,0,0,.7)',
+                            fontWeight: 700,
+                        }
+                    },
+                    emphasis: {
+                        show: true,
+                        textStyle: {
+                            color: '#ffffff',
+                            fontSize:16
+                        }
+                    }
+                },
+                roam: true,
+                zoom: 1.25,// 控制地图的放大和缩小
+                scaleLimit:{
+                    min:'1'
+                },
+                selectedMode:'single',
+                select:{
+                    label:{
+                        show:true,
+                        color: '#ffffff',
+                        fontSize:16
+                        
+                    },
+                    itemStyle:{
+                    areaColor: '#e41908',
+                    shadowBlur: 2,
+                    borderWidth: 2,
+                    }
+                },
+                itemStyle: {
+                    normal: {
+                        borderWidth: 2, // 地图边框宽度
+                        borderColor: 'gray', // 地图边框颜色
+                        areaColor: '#bbcdc5' // 地图颜色
+                    },
+                    emphasis: {//选中省份的颜色
+                        areaColor: '#e41908',
+                        shadowBlur: 2,
+                        borderWidth: 2,
+                    },
+                },
+                data: ''
+            }],
+            visualMap: [{
+                type: 'piecewise',
+                show: true,
+                // splitNumber:4
+                pieces: [           // 分段
+                    { min: 50 },
+                    { min: 40, max: 49 },
+                    { min: 30, max: 39 },
+                    { min: 20, max: 29 },
+                    { min: 1, max: 19 }
+                ],
+                textStyle: {
+                    color: '#004e92',
+                    fontSize: 14,
+                },
+                inRange: {
+                    symbol: 'rect',
+                    color: ['#e0ffff', '#006edd']
+                },
+                itemWidth: 20,
+                itemHeight: 10
+            }],
+            tooltip: {
+                trigger: 'item',
             },
-      inRange:{
-        symbol:'rect',
-        color:['#004e92','#3a7bd5']    
-      },
-      itemWidth:20,
-      itemHeight:10
-    }],
-    tooltip:{
-      trigger:'item',
-    },
         }
-        
+    
+    function init(){
+        let myChart = echarts.getInstanceById('map'); //有的话就获取已有echarts实例的DOM节点。
+            if (myChart == null) { // 如果不存在，就进行初始化。
+                myChart = echarts.init($('#map')[0]);
+            }
+            myChart.setOption(option)
+            myChart.on('click',(params)=>{
+               if(!params.data){
+                alert('该地区暂无数据')
+               }
+               else{
+                $('#title').text(params.data.name+'--就业政策')
+                $('li').remove()
+                params.data.data.forEach(item=> {
+                    $('#list').append(`<li><a href=${item.url} class=info target="_blank">${item.title}</a></li>`)
+                });
+               }
+                
+            })
+            $(window).resize(()=>{ myChart.resize()})
+    }
+    $(function () {
+    $.getJSON('info.json',(info)=>{
+        option.series[0].data=info.map(i=>({
+                    name:i.name,
+                    value:i.data.length,
+                    data:i.data
+                }))
+
+    $.getJSON('china2.json', (data) => {
+        echarts.registerMap('china2', data)  
+        init()
+        let controll=[]
+        let one=gui.addFolder('地图移入文本颜色');
+        controll.push(one.addColor(option.series[0].label.emphasis.textStyle,'color'))
+        let two=gui.addFolder('地图选择文本颜色');
+        controll.push(two.addColor(option.series[0].select.label,'color'))
+        let three=gui.addFolder('地图选择区域颜色');
+        controll.push(three.addColor(option.series[0].select.itemStyle,'areaColor'))
+        let four=gui.addFolder('地图无数据区域颜色');
+        controll.push(four.addColor(option.series[0].itemStyle.normal,'areaColor'))
+        let five=gui.addFolder('地图移入区域颜色');
+        controll.push(five.addColor(option.series[0].itemStyle.emphasis,'areaColor'))
+        let six=gui.addFolder('地图颜色范围(最低到最高)');
+        controll.push(six.addColor(option.visualMap[0].inRange.color,'0'))
+        controll.push(six.addColor(option.visualMap[0].inRange.color,'1'))
+        controll.map(item=>{
+            item.onChange((n)=>{
+               init()
+            }) 
+            })
+        })
+        })
     })
 </script>
+
 </html>
