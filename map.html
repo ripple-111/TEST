@@ -212,7 +212,7 @@
                }
                else{
                 $('#title').text(params.data.name+'--就业政策')
-                $('li').remove()
+                $('#list>li').remove()
                 params.data.data.forEach(item=> {
                     $('#list').append(`<li><a href=${item.url} class=info target="_blank">${item.title}</a></li>`)
                 });
