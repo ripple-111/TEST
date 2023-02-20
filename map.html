@@ -10,7 +10,6 @@
     <title>就业政策地图</title>
     <script src="https://cdn.bootcdn.net/ajax/libs/echarts/5.4.1/echarts.min.js"></script>
     <script src="https://upcdn.b0.upaiyun.com/libs/jquery/jquery-1.9.1.min.js"></script>
-    <script src="dat.gui.js"></script>
     <style>
         * {
             margin: 0;
@@ -27,24 +26,23 @@
             text-decoration: none;
             color: black;
             word-wrap: break-word;
-            text-indent: 1em;
+            text-indent:1em;
         }
-
+        
         .info:hover {
             color: white;
-            background-color: rgba(111, 111, 111, 0.3);
+            background-color: rgba(111, 111, 111, 0.6);
         }
-
         .side {
-
+            overflow: hidden auto;
             flex: 1;
-            /* padding: 0 0 0 5px; */
-            height: 650px;
+            padding: 0 10px;
+            min-height: 650px;
+            height:calc(100vh - 200px);
             background: white;
-            position: relative
+            box-shadow:inset 0 0 3px rgba(0,0,0,.7)
         }
-
-        li {
+        #list > li {
             font-size: 18px;
             margin-top: 20px;
             line-height: 30px;
@@ -56,8 +54,7 @@
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
         }
-
-        .swipe-list {
+        .swipe-list{
             position: absolute;
             top: 0;
             left: 0;
@@ -65,21 +62,24 @@
             bottom: 0;
             overflow: hidden;
         }
-
-        .swipe-item {
+        .swipe-item{
             position: relative;
             width: 100%;
         }
-
+        a:-webkit-any-link {
+            color: black;
+            cursor: pointer;
+            text-decoration: underline;
+        }
         @media screen and (max-width:1000px) {
-            #map {
-                width: 100% !important;
+            #map{
+                width: 100%!important;
                 margin-bottom: 50px;
-                margin-right: 0px !important;
+                margin-right: 0px!important;
+                height:650px!important;
             }
-
-            .side {
-                height: calc(100vh - 1000px) !important;
+            .side{
+               height: calc(100vh - 1000px)!important;
             }
         }
     </style>
@@ -101,64 +101,21 @@
         <div class="container" style="flex:1 1 auto;min-height: 400px;margin:10px;">
             <div class="inner"
                 style="margin: 0 auto;min-height:500px;box-shadow: 0 0 5px rgb(0 0 0 / 10%);width:90vw;display: flex;flex-wrap: wrap;">
-                <div id="map" style="height:650px;width:70%;margin-right: 20px;">
+                <div id="map" style="height:calc(100vh - 200px);min-height: 650px;width:70%;margin-right: 20px;box-shadow:inset 0 0 3px rgba(0,0,0,.7)">
                     <p style="font-size:22px;text-align:center;margin-top:100px">加载中...</p>
                 </div>
                 <div class="side" >
-                    <p style="text-align:center;height:5%;font-Weight:700;font-size: 20px;text-decoration: underline;" id="title">
-                        就业政策
-                    </p>
-                    <a style="display:block;color:black;width:70%;height: 100%;position:absolute;top:0"
-                            href="http://rst.hunan.gov.cn/rst/xxgk/zcfg/zcjd/201909/t20190929_10468818.html"
-                            target="_blank"></a>
-                    <!-- <ul style="margin-top:10px" id="list">
+                    <p style="text-align:center;font-Weight:700;font-size: 20px;;border-bottom:2px solid gray ;" id="title">
+                        <a href="javascript:;" target="_blank" style="margin:10px 0px;display: block;">就业政策</a></p>
+                    <ul style="margin-top:10px" id="list">
                         <li style="text-align:center;font-size: 20px;color:gray;margin-top: 100px;border: none;">请在地图选择你想了解的省份</li>
-                    </ul> -->
-                    <iframe src="http://rst.hunan.gov.cn/rst/xxgk/zcfg/zcjd/201909/t20190929_10468818.html" title="就业政策"
-                        height="95%" width="100%" style="border:none;box-sizing: border-box;display: block;">
-                    </iframe>
+                    </ul>
                 </div>
             </div>
         </div>
     </div>
 </body>
 <script type="module">
-    // const gui=new dat.GUI()
-    let region = [{ 湖南省: 'http://rst.hunan.gov.cn/rst/xxgk/zcfg/zcjd/201909/t20190929_10468818.html' },
-    { 广东省: 'http://hrss.gd.gov.cn/zwfw/mdml/content/post_3063710.html' },
-    { 海南省: 'http://hrss.hainan.gov.cn/hrss/0503/202207/9dfc4cbce46e4801b4b7a1104cfef5db.shtml' },
-    { 广西省: 'http://rst.gxzf.gov.cn/zwgk/xxgkzcfg/xxgkwjjd/ycmh/t13170327.shtml' },
-    { 湖北省: 'http://www.mohrss.gov.cn/wap/xw/dfdt/202207/t20220707_456716.html' },
-    { 江西省: 'http://rst.jiangxi.gov.cn/art/2022/12/1/art_71490_4269009.html' },
-    { 新疆维吾尔自治区: 'http://rst.xinjiang.gov.cn/xjrst/zxfb/201303/f4c568655c5943d5b55c801d40c31b7e.shtml' },
-    { 西藏自治区: 'http://www.xizang.gov.cn/zwgk/xxfb/zbwj/202207/t20220714_314174.html' },
-    { 福建省: 'http://www.gov.cn/xinwen/2022-06/06/content_5694256.htm' },
-    { 云南省: 'http://hrss.yn.gov.cn/NewsView.aspx?NewsID=44101&ClassID=556' },
-    { 安徽省: 'https://www.yd.gov.cn/xxgk/detail/content/627c6b3f8866888f588b4567.html' },
-    { 浙江省: 'http://www.hzsc.gov.cn/art/2022/7/11/art_1229430178_58973830.html' },
-    { 北京市: 'http://www.beijing.gov.cn/zhengce/zhengcefagui/202206/t20220624_2750647.html' },
-    { 天津市: 'https://www.tj.gov.cn/sy/tjxw/202207/t20220708_5928900.html' },
-    { 河北省: 'https://rst.hebei.gov.cn/a/news/guonei/2015/0706/1596.html' },
-    { 山西省: 'http://rst.shanxi.gov.cn/zwyw/zcfg/bmwj/201407/t20140708_2908434.html' },
-    { 内蒙古自治区: 'http://www.huiminqu.gov.cn/zwgk_new/bmxxgk_new/zfzcbm/rlzyshbzj/zfxxgkzl_46892/fdzdgknr/zcjd/202204/t20220427_1237584.html' },
-    { 辽宁省: 'http://www.ln.gov.cn/ywdt/tjdt/202207/t20220718_4617396.html' },
-    { 吉林省: 'http://ccrs.changchun.gov.cn/yshj/202009/t20200907_2510177.html' },
-    { 黑龙江省: 'http://hrss.hlj.gov.cn/hrss/c111736/202211/c00_31397737.shtml' },
-    { 上海市: 'http://rsj.sh.gov.cn/tqtwj_17340/20211105/t0035_1403538.html' },
-    { 江苏省: 'http://www.js.gov.cn/art/2022/6/21/art_84418_10510042.html' },
-    { 山东省: 'http://www.shandong.gov.cn/art/2019/1/30/art_100623_25888.html' },
-    { 河南省: 'http://www.henan.gov.cn/2022/11-26/2646842.html' },
-    { 湖北省: 'http://www.mohrss.gov.cn/wap/xw/dfdt/202207/t20220707_456716.html' },
-    { 重庆市: 'http://www.cq.gov.cn/zwgk/zfxxgkml/lwlb/cqzxd/zzdt/202206/t20220621_10836272.html' },
-    { 四川省: 'http://rst.sc.gov.cn/rst/jdhy/2022/6/30/8852fa937f6d4f1e96efcc0796717b0d.shtml' },
-    { 贵州省: 'https://www.bijie.gov.cn/bm/bjsrsj/zwgk/jycy/jycjgk/202207/t20220719_75581302.html' },
-    { 陕西省: 'https://rst.shaanxi.gov.cn/newstyle/pub_newsshow.asp?id=1017431&chid=100694' },
-    { 青海省: 'http://www.gov.cn/fuwu/2014-07/09/content_2714468.htm' },
-    { 宁夏回族自治区: 'http://hrss.nx.gov.cn/ztlm/jysrkzz/202207/t20220704_3596986.html' },
-    { 香港特别行政区: 'http://hrss.gd.gov.cn/gkmlpt/content/3/3519/post_3519753.html#4056' },
-    { 澳门特别行政区: 'http://hrss.gd.gov.cn/gkmlpt/content/3/3519/post_3519753.html#4056' },
-    { 台湾省: 'http://www.tailian.org.cn/jy/' },
-    ]
     const option = {
         backgroundColor: '#ffffff',//地图背景色
         title: {
@@ -199,7 +156,6 @@
                     show: true,
                     color: '#ffffff',
                     fontSize: 16
-
                 },
                 itemStyle: {
                     areaColor: '#e41908',
@@ -219,7 +175,7 @@
                     borderWidth: 2,
                 },
             },
-            data: ''
+            data: []
         }],
         visualMap: [{
             type: 'piecewise',
@@ -260,56 +216,26 @@
             }
             else {
                 $('#title > a').text(params.data.name + '--就业政策')
-                // $('li').remove()
-                // params.data.data.forEach(item=> {
-                //     $('#list').append(`<li><a href=${item.url} class=info target="_blank">${item.title}</a></li>`)
-                // });
-                let src = region.find(item => Object.keys(item)[0].includes(params.data.name))
-                setTimeout(() => {
-                    window.open(Object.values(src)[0]);
-                }, 3000)
-                if (src) {
-                    $('iframe').attr('src', Object.values(src)[0])
-                    $('#title > a').attr('href', Object.values(src)[0])
-                }
-                else {
-                    alert('暂无数据')
-                }
+                $('li').remove()
+                params.data.data.forEach((item,index)=> {
+                    $('#list').append(`<li><a href=${item.url} class=info target="_blank">${index+1+'.'+item.title}</a></li>`)
+                });
             }
 
         })
         $(window).resize(() => { myChart.resize() })
     }
     $(function () {
-        $.getJSON('info.json', (info) => {
+        $.getJSON('data.json', (info) => {
             option.series[0].data = info.map(i => ({
                 name: i.name,
-                value: i.data.length,
+                value: i.data.length < 10 && Math.floor(Math.random()*50),
                 data: i.data
             }))
-
-            $.getJSON('china2.json', (data) => {
+            console.log(option.series[0].data)
+            $.getJSON('china.json', (data) => {
                 echarts.registerMap('china2', data)
                 init()
-                // let controll=[]
-                // let one=gui.addFolder('地图移入文本颜色');
-                // controll.push(one.addColor(option.series[0].label.emphasis.textStyle,'color'))
-                // let two=gui.addFolder('地图选择文本颜色');
-                // controll.push(two.addColor(option.series[0].select.label,'color'))
-                // let three=gui.addFolder('地图选择区域颜色');
-                // controll.push(three.addColor(option.series[0].select.itemStyle,'areaColor'))
-                // let four=gui.addFolder('地图无数据区域颜色');
-                // controll.push(four.addColor(option.series[0].itemStyle.normal,'areaColor'))
-                // let five=gui.addFolder('地图移入区域颜色');
-                // controll.push(five.addColor(option.series[0].itemStyle.emphasis,'areaColor'))
-                // let six=gui.addFolder('地图颜色范围(最低到最高)');
-                // controll.push(six.addColor(option.visualMap[0].inRange.color,'0'))
-                // controll.push(six.addColor(option.visualMap[0].inRange.color,'1'))
-                // controll.map(item=>{
-                //     item.onChange((n)=>{
-                //        init()
-                //     }) 
-                //     })
             })
         })
     })
