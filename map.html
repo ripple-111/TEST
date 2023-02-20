@@ -226,7 +226,7 @@
         $(window).resize(() => { myChart.resize() })
     }
     $(function () {
-        $.getJSON('data.json', (info) => {
+        $.getJSON('./data.json', (info) => {
             option.series[0].data = info.map(i => ({
                 name: i.name,
                 value: i.data.length < 10 && Math.floor(Math.random()*50),
