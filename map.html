@@ -106,7 +106,7 @@
                 </div>
                 <div class="side" >
                     <p style="text-align:center;font-Weight:700;font-size: 20px;;border-bottom:2px solid gray ;" id="title">
-                        <a href="javascript:;" target="_blank" style="margin:10px 0px;display: block;">就业政策</a></p>
+                        <a href="javascript:;" style="margin:10px 0px;display: block;">就业政策</a></p>
                     <ul style="margin-top:10px" id="list">
                         <li style="text-align:center;font-size: 20px;color:gray;margin-top: 100px;border: none;">请在地图选择你想了解的省份</li>
                     </ul>
@@ -226,13 +226,12 @@
         $(window).resize(() => { myChart.resize() })
     }
     $(function () {
-        $.getJSON('./data.json', (info) => {
+        $.getJSON('data.json', (info) => {
             option.series[0].data = info.map(i => ({
                 name: i.name,
                 value: i.data.length < 10 && Math.floor(Math.random()*50),
                 data: i.data
             }))
-            console.log(option.series[0].data)
             $.getJSON('china.json', (data) => {
                 echarts.registerMap('china2', data)
                 init()
